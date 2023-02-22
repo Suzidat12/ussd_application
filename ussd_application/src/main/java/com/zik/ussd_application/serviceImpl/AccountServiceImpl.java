@@ -73,7 +73,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResponseEntity deposit(double amount , String phoneNumber) {
+    public ResponseEntity deposit(Double amount , String phoneNumber) {
         Accounts accounts = validateAccount(phoneNumber);
         accounts.getAccountNumber();
         accounts.getFirstName();
