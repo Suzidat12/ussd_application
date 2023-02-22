@@ -3,6 +3,7 @@ package com.zik.ussd_application.serviceImpl;
 import com.zik.ussd_application.accountRepo.AccountRepo;
 import com.zik.ussd_application.dto.AccountDto;
 import com.zik.ussd_application.exception.DuplicationRecordException;
+import com.zik.ussd_application.exception.InsufficientException;
 import com.zik.ussd_application.exception.RecordNotFoundException;
 import com.zik.ussd_application.model.Accounts;
 import com.zik.ussd_application.service.AccountService;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +27,7 @@ import static com.zik.ussd_application.utils.MessageUtil.*;
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
     private final AccountRepo accountRepo;
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private  Accounts validateAccount(String phoneNumber) {
         Optional<Accounts> accountsOptional = accountRepo.checkRecord(phoneNumber);
@@ -34,15 +38,16 @@ public class AccountServiceImpl implements AccountService {
     }
     @Override
     public ResponseEntity createAccount(AccountDto load) {
-        //check if phone number or account number already exist
-        List<Accounts> accountsList = accountRepo.isRecordExist(load.getPhoneNumber(), load.getAccountNumber());
+        //check if phone number  already exist
+        List<Accounts> accountsList = accountRepo.isRecordExist(load.getPhoneNumber());
         if(!accountsList.isEmpty()){
            throw new  DuplicationRecordException(DUPLICATE_ACCOUNT);
         }else{
             Accounts accounts = new Accounts();
             accounts.setFirstName(load.getFirstName());
             accounts.setLastName(load.getLastName());
-            accounts.setDateOfBirth(load.getDateOfBirth());
+            accounts.setPhoneNumber(load.getPhoneNumber());
+            accounts.setDateOfBirth(LocalDate.parse(load.getDateOfBirth(),formatter));
             accounts.setGender(load.getGender());
             accounts.setAddress(load.getAddress());
             accounts.setAccountNumber(AppUtils.generateAccountNumber());
@@ -65,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
         accounts.setPin(AppUtils.encryptPin(load.getPin()));
         accounts.setAccountType(load.getAccountType());
         accounts.setPhoneNumber(load.getPhoneNumber());
-        accounts.setDateOfBirth(load.getDateOfBirth());
+        accounts.setDateOfBirth(LocalDate.parse(load.getDateOfBirth(),formatter));
         accounts.setGender(load.getGender());
         accounts.setDatecreated(new Date());
         accountRepo.save(accounts);
@@ -75,10 +80,23 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public ResponseEntity deposit(Double amount , String phoneNumber) {
         Accounts accounts = validateAccount(phoneNumber);
-        accounts.getAccountNumber();
-        accounts.getFirstName();
+        accounts.setLastTransactionDate(new Date());
         accounts.setBalance(accounts.getBalance()+amount);
         accountRepo.save(accounts);
-        return ResponseEntity.ok(ACCOUNT_DEPOSIT);
+        return ResponseEntity.ok(ACCOUNT_DEPOSIT+ amount +DEPOSIT_SUCCESSFUL);
+    }
+
+    @Override
+    public ResponseEntity withdraw(Double amount, String phoneNumber) {
+        Accounts accounts = validateAccount(phoneNumber);
+        if(amount > accounts.getBalance()){
+            throw  new InsufficientException(INSUFFICIENT_BALANCE);
+        }
+            accounts.setBalance(accounts.getBalance()-amount);
+            accounts.setLastTransactionDate(new Date());
+            accountRepo.save(accounts);
+            return ResponseEntity.ok(ACCOUNT_WITHDRAW+ amount +WITHDRAW_SUCCESSFUL);
+
+
     }
 }

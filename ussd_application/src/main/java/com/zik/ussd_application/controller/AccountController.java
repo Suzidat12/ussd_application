@@ -21,4 +21,9 @@ public class AccountController {
     public ResponseEntity deposit(@RequestParam("amount") Double amount,@RequestParam("phoneNumber") String phoneNumber){
         return accountService.deposit(amount,phoneNumber);
     }
+
+    @PostMapping("/withdraw")
+    public ResponseEntity withdraw(@RequestParam("amount") Double amount,@RequestParam("phoneNumber") String phoneNumber){
+        return accountService.withdraw(amount,phoneNumber);
+    }
 }

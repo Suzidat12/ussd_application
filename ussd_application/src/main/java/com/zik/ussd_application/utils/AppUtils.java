@@ -1,16 +1,9 @@
 package com.zik.ussd_application.utils;
 
 
-import com.zik.ussd_application.accountRepo.AccountRepo;
-import com.zik.ussd_application.exception.RecordNotFoundException;
-import com.zik.ussd_application.model.Accounts;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-
-import java.util.Optional;
 import java.util.Random;
 
-import static com.zik.ussd_application.utils.MessageUtil.ACCOUNT_NOT_FOUND;
+
 
 public class AppUtils {
 

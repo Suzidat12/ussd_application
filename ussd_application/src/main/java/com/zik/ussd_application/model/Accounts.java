@@ -4,6 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -21,7 +22,7 @@ public class Accounts {
     private String city;
     private String state;
     private String country;
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
     private String gender;
     private String nationality;
     private String accountType;
@@ -111,11 +112,11 @@ public class Accounts {
         this.country = country;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
