@@ -29,6 +29,7 @@ public class Accounts {
     private String pin;
     private Double balance;
     private Date datecreated;
+    private Date lastTransactionDate;
 
     public Long getAccountId() {
         return accountId;
@@ -172,5 +173,13 @@ public class Accounts {
 
     public void setDatecreated(Date datecreated) {
         this.datecreated = datecreated;
+    }
+
+    public Date getLastTransactionDate() {
+        return lastTransactionDate;
+    }
+
+    public void setLastTransactionDate(Date lastTransactionDate) {
+        this.lastTransactionDate = lastTransactionDate;
     }
 }
