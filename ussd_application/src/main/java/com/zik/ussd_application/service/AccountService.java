@@ -5,5 +5,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface AccountService {
     public ResponseEntity createAccount(AccountDto load);
-    public ResponseEntity updateCreatedAccount(AccountDto load, Long id);
+    public ResponseEntity updateCreatedAccount(AccountDto load, String phoneNumber);
+    public ResponseEntity deposit(double amount,String phoneNumber);
 }
