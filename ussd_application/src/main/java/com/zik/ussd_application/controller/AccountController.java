@@ -26,4 +26,9 @@ public class AccountController {
     public ResponseEntity withdraw(@RequestParam("amount") Double amount,@RequestParam("phoneNumber") String phoneNumber){
         return accountService.withdraw(amount,phoneNumber);
     }
+
+    @GetMapping("/checkBalance")
+    public ResponseEntity checkBalance(@RequestParam("phoneNumber") String phoneNumber){
+        return accountService.checkBalance(phoneNumber);
+    }
 }

@@ -8,4 +8,5 @@ public interface AccountService {
     public ResponseEntity updateCreatedAccount(AccountDto load, String phoneNumber);
     public ResponseEntity deposit(Double amount,String phoneNumber);
     public ResponseEntity withdraw(Double amount,String phoneNumber);
+    public ResponseEntity checkBalance(String phoneNumber);
 }

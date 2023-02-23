@@ -99,4 +99,11 @@ public class AccountServiceImpl implements AccountService {
 
 
     }
+
+    @Override
+    public ResponseEntity checkBalance(String phoneNumber) {
+        Accounts accounts = validateAccount(phoneNumber);
+        Double checkBalance = accounts.getBalance();
+        return ResponseEntity.ok(CHECK_BALANCE + checkBalance);
+    }
 }

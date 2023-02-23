@@ -11,5 +11,6 @@ public class MessageUtil {
     public final static String DEPOSIT_SUCCESSFUL= "naira was make successfully";
     public final static String WITHDRAW_SUCCESSFUL= "naira was make successfully";
     public final static String INSUFFICIENT_BALANCE= "Insufficient amount in your account";
+    public final static String CHECK_BALANCE= "The available balance is ";
 
 }
