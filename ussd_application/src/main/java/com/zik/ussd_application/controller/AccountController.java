@@ -17,6 +17,11 @@ public class AccountController {
        return accountService.createAccount(load);
     }
 
+    @PutMapping("/update/account")
+    public ResponseEntity updateCreatedAccount(@RequestBody AccountDto load,@RequestParam("phoneNumber") String phoneNumber){
+        return accountService.updateCreatedAccount(load,phoneNumber);
+    }
+
     @PostMapping("/deposit")
     public ResponseEntity deposit(@RequestParam("amount") Double amount,@RequestParam("phoneNumber") String phoneNumber){
         return accountService.deposit(amount,phoneNumber);
