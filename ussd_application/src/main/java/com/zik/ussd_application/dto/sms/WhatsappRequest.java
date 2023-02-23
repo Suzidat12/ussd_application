@@ -1,0 +1,26 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.zik.ussd_application.dto.sms;
+
+import lombok.Data;
+
+import java.io.Serializable;
+
+/**
+ *
+ * @author Olasunkanmi
+ */
+@Data
+public class WhatsappRequest implements Serializable {
+    String to;
+    String from;
+    String sms;
+    String type;
+    String channel;
+    String api_key;
+//    Media media;
+    
+}

@@ -2,33 +2,77 @@ package com.zik.ussd_application.serviceImpl;
 
 import com.zik.ussd_application.accountRepo.AccountRepo;
 import com.zik.ussd_application.dto.AccountDto;
+import com.zik.ussd_application.dto.sms.Mrec;
+import com.zik.ussd_application.dto.sms.SmsRequest;
+import com.zik.ussd_application.enums.AccountStatus;
 import com.zik.ussd_application.exception.DuplicationRecordException;
 import com.zik.ussd_application.exception.InsufficientException;
 import com.zik.ussd_application.exception.RecordNotFoundException;
+import com.zik.ussd_application.feign.MessageFeign;
 import com.zik.ussd_application.model.Accounts;
 import com.zik.ussd_application.service.AccountService;
 
 import com.zik.ussd_application.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 import static com.zik.ussd_application.utils.MessageUtil.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AccountServiceImpl implements AccountService {
     private final AccountRepo accountRepo;
+//    private final HttpServletRequest httpServletRequest;
+    private final MessageFeign messageFeign;
+    @Value("${API_KEY}")
+    private String API_KEY;
+    @Value("${API_FROM}")
+    private String API_FROM;
+    @Value("${API_CHANNELOTP}")
+    private String sms;
+    @Value("${API_TYPE}")
+    private String API_TYPE;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+//    private String getHeader(){
+//        return httpServletRequest.getHeader("Authorization");
+//    }
 
+    private String getPhone(String phone) {
+        if(phone.startsWith("+234")){
+            return phone.substring(1);
+        }
+        if(phone.startsWith("234")){
+            return phone;
+        }
+
+        return "234"+phone.substring(1);
+
+    }
+
+    private void postToPhone(Mrec load) {
+
+        SmsRequest req = SmsRequest.builder()
+                .api_key(API_KEY)
+                .sms(load.getSms())
+                .channel(load.getCategory().equals("sms") ? sms : null)
+                .from(API_FROM)
+                .to(load.getTo())
+                .type(API_TYPE)
+                .build();
+        HashMap<String, Object> result = messageFeign.sendMessage(req);
+        log.info("{}", result);
+    }
     private  Accounts validateAccount(String phoneNumber) {
         Optional<Accounts> accountsOptional = accountRepo.checkRecord(phoneNumber);
         if (accountsOptional.isEmpty())
@@ -55,7 +99,15 @@ public class AccountServiceImpl implements AccountService {
             accounts.setPin(AppUtils.encryptPin(load.getPin()));
             accounts.setBalance(0.00);
             accounts.setDatecreated(new Date());
+            accounts.setAccountStatus(AccountStatus.COMPLETED.name());
             accountRepo.save(accounts);
+            if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+                postToPhone(Mrec.builder()
+                        .category("sms")
+                        .sms("You have successfully created an account with phone number:"+ accounts.getPhoneNumber()+"with account number"+accounts.getAccountNumber())
+                        .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+                        .build());
+            }
             return ResponseEntity.ok(ACCOUNT_CREATED);
 
         }

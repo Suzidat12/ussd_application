@@ -1,11 +1,14 @@
 package com.zik.ussd_application.controller;
 
 
+import com.hextremelabs.ussd.dto.UssdRequest;
 import com.zik.ussd_application.dto.AccountDto;
 import com.zik.ussd_application.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/ussd")
@@ -36,6 +39,5 @@ public class AccountController {
     public ResponseEntity checkBalance(@RequestParam("phoneNumber") String phoneNumber){
         return accountService.checkBalance(phoneNumber);
     }
-
 
 }

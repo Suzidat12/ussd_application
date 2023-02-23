@@ -1,9 +1,6 @@
 package com.zik.ussd_application.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Date;
 
@@ -11,7 +8,7 @@ import java.util.Date;
 @Table(name = "accounts")
 public class Accounts {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long accountId;
     private String accountNumber;
     private String firstName;
