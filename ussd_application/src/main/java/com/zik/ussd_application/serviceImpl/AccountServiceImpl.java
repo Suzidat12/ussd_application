@@ -31,17 +31,18 @@ import static com.zik.ussd_application.utils.MessageUtil.*;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepo accountRepo;
     private final MessageFeign messageFeign;
-    @Value("TL27kG3Jk874ZnNtz7XSkJo7v7dx8rlEHKzEh57JTvehizQMBF2TXwUbD9MhDZ")
+    @Value("${API_KEY}")
     private String API_KEY;
-    @Value("N-Alert")
+    @Value("${API_FROM}")
     private String API_FROM;
-    @Value("dnd")
+    @Value("${API_CHANNELOTP}")
     private String sms;
-    @Value("plain")
+    @Value("${API_TYPE}")
     private String API_TYPE;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-
+//The SMS implementation is working fine, but I decided to commented it because I will not be
+//    pushing the credentials along with it ,but during review I can share it.
     private String getPhone(String phone) {
         if(phone.startsWith("+234")){
             return phone.substring(1);
@@ -95,13 +96,13 @@ public class AccountServiceImpl implements AccountService {
             accounts.setDatecreated(new Date());
             accounts.setAccountStatus(AccountStatus.COMPLETED.name());
             accountRepo.save(accounts);
-            if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
-                postToPhone(Mrec.builder()
-                        .category("sms")
-                        .sms("You have successfully created an account with phone number: " + accounts.getPhoneNumber()+ " with account number "+ accounts.getAccountNumber())
-                        .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
-                        .build());
-            }
+//            if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+//                postToPhone(Mrec.builder()
+//                        .category("sms")
+//                        .sms("You have successfully created an account with phone number: " + accounts.getPhoneNumber()+ " with account number "+ accounts.getAccountNumber())
+//                        .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+//                        .build());
+//            }
             return ResponseEntity.ok(ACCOUNT_CREATED);
 
         }
@@ -129,13 +130,13 @@ public class AccountServiceImpl implements AccountService {
         accounts.setLastTransactionDate(new Date());
         accounts.setBalance(accounts.getBalance()+amount);
         accountRepo.save(accounts);
-        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
-            postToPhone(Mrec.builder()
-                    .category("sms")
-                    .sms("You have successfully deposited ₦"+amount+ "into your account")
-                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
-                    .build());
-        }
+//        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+//            postToPhone(Mrec.builder()
+//                    .category("sms")
+//                    .sms("You have successfully deposited ₦"+amount+ "into your account")
+//                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+//                    .build());
+//        }
         return ResponseEntity.ok(ACCOUNT_DEPOSIT+ amount +DEPOSIT_SUCCESSFUL);
     }
 
@@ -148,13 +149,13 @@ public class AccountServiceImpl implements AccountService {
             accounts.setBalance(accounts.getBalance()-amount);
             accounts.setLastTransactionDate(new Date());
             accountRepo.save(accounts);
-        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
-            postToPhone(Mrec.builder()
-                    .category("sms")
-                    .sms("You have successfully withdraw ₦"+amount+ "from your account")
-                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
-                    .build());
-        }
+//        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+//            postToPhone(Mrec.builder()
+//                    .category("sms")
+//                    .sms("You have successfully withdraw ₦"+amount+ "from your account")
+//                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+//                    .build());
+//        }
             return ResponseEntity.ok(ACCOUNT_WITHDRAW+ amount +WITHDRAW_SUCCESSFUL);
 
     }
@@ -163,6 +164,13 @@ public class AccountServiceImpl implements AccountService {
     public ResponseEntity checkBalance(String phoneNumber) {
         Accounts accounts = validateAccount(phoneNumber);
         Double checkBalance = accounts.getBalance();
+//        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+//            postToPhone(Mrec.builder()
+//                    .category("sms")
+//                    .sms("Your balance is ₦"+checkBalance)
+//                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+//                    .build());
+//        }
         return ResponseEntity.ok(CHECK_BALANCE + checkBalance);
     }
 }
