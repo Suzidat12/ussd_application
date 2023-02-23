@@ -8,7 +8,7 @@ import java.util.Date;
 @Table(name = "accounts")
 public class Accounts {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long accountId;
     private String accountNumber;
     private String firstName;

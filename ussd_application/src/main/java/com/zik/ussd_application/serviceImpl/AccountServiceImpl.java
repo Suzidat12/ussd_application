@@ -17,10 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -33,20 +30,17 @@ import static com.zik.ussd_application.utils.MessageUtil.*;
 @Slf4j
 public class AccountServiceImpl implements AccountService {
     private final AccountRepo accountRepo;
-//    private final HttpServletRequest httpServletRequest;
     private final MessageFeign messageFeign;
-    @Value("${API_KEY}")
+    @Value("TL27kG3Jk874ZnNtz7XSkJo7v7dx8rlEHKzEh57JTvehizQMBF2TXwUbD9MhDZ")
     private String API_KEY;
-    @Value("${API_FROM}")
+    @Value("N-Alert")
     private String API_FROM;
-    @Value("${API_CHANNELOTP}")
+    @Value("dnd")
     private String sms;
-    @Value("${API_TYPE}")
+    @Value("plain")
     private String API_TYPE;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//    private String getHeader(){
-//        return httpServletRequest.getHeader("Authorization");
-//    }
+
 
     private String getPhone(String phone) {
         if(phone.startsWith("+234")){
@@ -104,7 +98,7 @@ public class AccountServiceImpl implements AccountService {
             if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
                 postToPhone(Mrec.builder()
                         .category("sms")
-                        .sms("You have successfully created an account with phone number:"+ accounts.getPhoneNumber()+"with account number"+accounts.getAccountNumber())
+                        .sms("You have successfully created an account with phone number: " + accounts.getPhoneNumber()+ " with account number "+ accounts.getAccountNumber())
                         .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
                         .build());
             }
@@ -135,6 +129,13 @@ public class AccountServiceImpl implements AccountService {
         accounts.setLastTransactionDate(new Date());
         accounts.setBalance(accounts.getBalance()+amount);
         accountRepo.save(accounts);
+        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+            postToPhone(Mrec.builder()
+                    .category("sms")
+                    .sms("You have successfully deposited ₦"+amount+ "into your account")
+                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+                    .build());
+        }
         return ResponseEntity.ok(ACCOUNT_DEPOSIT+ amount +DEPOSIT_SUCCESSFUL);
     }
 
@@ -147,8 +148,14 @@ public class AccountServiceImpl implements AccountService {
             accounts.setBalance(accounts.getBalance()-amount);
             accounts.setLastTransactionDate(new Date());
             accountRepo.save(accounts);
+        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+            postToPhone(Mrec.builder()
+                    .category("sms")
+                    .sms("You have successfully withdraw ₦"+amount+ "from your account")
+                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+                    .build());
+        }
             return ResponseEntity.ok(ACCOUNT_WITHDRAW+ amount +WITHDRAW_SUCCESSFUL);
-
 
     }
 
