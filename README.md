@@ -24,5 +24,6 @@ Steps:
 * Added third party payment api (paystack) integration using feign client.
 * Create a static message for the endpoints into the message util to avoid exposure of the endpoints.
 * Test the endpoints.
+* Link to the postman collection via API: https://api.postman.com/collections/10835769-ccd5909a-fb1b-409e-ba1d-40157a42e47b?access_key=PMAT-01GT1ECKXYWVSR2GZNANCHS8Z3
 
 
