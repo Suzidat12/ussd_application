@@ -1,41 +1,41 @@
 package com.zik.ussd_application.controller;
 
 
-import com.hextremelabs.ussd.dto.UssdRequest;
 import com.zik.ussd_application.dto.AccountDto;
 import com.zik.ussd_application.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
+import static com.zik.ussd_application.utils.MessageUtil.*;
+
 
 @RestController
-@RequestMapping("/api/ussd")
+@RequestMapping(BASE_URL)
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
-    @PostMapping("/create/account")
+    @PostMapping(CREATE_ACCOUNT)
     public ResponseEntity createAccount(@RequestBody AccountDto load){
        return accountService.createAccount(load);
     }
 
-    @PutMapping("/update/account")
+    @PutMapping(UPDATE_ACCOUNT)
     public ResponseEntity updateCreatedAccount(@RequestBody AccountDto load,@RequestParam("phoneNumber") String phoneNumber){
         return accountService.updateCreatedAccount(load,phoneNumber);
     }
 
-    @PostMapping("/deposit")
+    @PostMapping(DEPOSIT)
     public ResponseEntity deposit(@RequestParam("amount") Double amount,@RequestParam("phoneNumber") String phoneNumber){
         return accountService.deposit(amount,phoneNumber);
     }
 
-    @PostMapping("/withdraw")
+    @PostMapping(WITHDRAW)
     public ResponseEntity withdraw(@RequestParam("amount") Double amount,@RequestParam("phoneNumber") String phoneNumber){
         return accountService.withdraw(amount,phoneNumber);
     }
 
-    @GetMapping("/checkBalance")
+    @GetMapping(BALANCE_CHECK)
     public ResponseEntity checkBalance(@RequestParam("phoneNumber") String phoneNumber){
         return accountService.checkBalance(phoneNumber);
     }

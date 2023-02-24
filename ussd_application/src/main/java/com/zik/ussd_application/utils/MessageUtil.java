@@ -12,5 +12,11 @@ public class MessageUtil {
     public final static String WITHDRAW_SUCCESSFUL= "was make successfully";
     public final static String INSUFFICIENT_BALANCE= "Insufficient amount in your account";
     public final static String CHECK_BALANCE= "The available balance is ₦";
+    public final static String BASE_URL= "/api/ussd";
+    public final static String CREATE_ACCOUNT= "/create/account";
+    public final static String UPDATE_ACCOUNT= "/update/account";
+    public final static String DEPOSIT= "/deposit";
+    public final static String WITHDRAW= "/withdraw";
+    public final static String BALANCE_CHECK= "/checkBalance";
 
 }
