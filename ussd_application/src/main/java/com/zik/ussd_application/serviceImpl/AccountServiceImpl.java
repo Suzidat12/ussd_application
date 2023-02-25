@@ -75,6 +75,14 @@ public class AccountServiceImpl implements AccountService {
         return accountsOptional.get();
 
     }
+
+    private  Accounts validateWithdrawal(String phoneNumber,String pin) {
+        Optional<Accounts> accountsOptional = accountRepo.checkPhoneNumberAndPin(phoneNumber, pin);
+        if (accountsOptional.isEmpty())
+            throw new RecordNotFoundException(PHONE_NUMBER_PIN_NOT_CORRECT);
+        return accountsOptional.get();
+
+    }
     @Override
     public ResponseEntity createAccount(AccountDto load) {
         //check if phone number  already exist
@@ -126,6 +134,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResponseEntity deposit(Double amount , String phoneNumber) {
+        //check if the phone number is valid
         Accounts accounts = validateAccount(phoneNumber);
         accounts.setLastTransactionDate(new Date());
         accounts.setBalance(accounts.getBalance()+amount);
@@ -141,8 +150,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResponseEntity withdraw(Double amount, String phoneNumber) {
-        Accounts accounts = validateAccount(phoneNumber);
+    public ResponseEntity withdraw(Double amount, String phoneNumber,String pin) {
+        // check if the phone number and the pin is correct
+        Accounts accounts = validateWithdrawal(phoneNumber,pin);
         if(amount > accounts.getBalance()){
             throw  new InsufficientException(INSUFFICIENT_BALANCE);
         }

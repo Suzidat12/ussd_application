@@ -13,4 +13,7 @@ public interface AccountRepo extends JpaRepository<Accounts, Long> {
     List<Accounts> isRecordExist(String phoneNumber);
     @Query("select st from Accounts st where st.phoneNumber=?1")
     Optional<Accounts> checkRecord(String phoneNumber);
+
+    @Query("select st from Accounts st where st.phoneNumber=?1 and st.pin=?2")
+    Optional<Accounts> checkPhoneNumberAndPin(String phoneNumber, String pin);
 }
