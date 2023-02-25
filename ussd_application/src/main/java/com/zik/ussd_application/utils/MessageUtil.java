@@ -5,8 +5,9 @@ public class MessageUtil {
     public final static String DUPLICATE_ACCOUNT= "Phone number already attached to an account number";
     public final static String ACCOUNT_CREATED= "Account has been successfully created";
     public final static String ACCOUNT_NOT_FOUND= "Account not exist";
-    public final static String PHONE_NUMBER_PIN_NOT_CORRECT= "Phone number and pin is not valid";
+    public final static String PIN_NOT_CORRECT= " Pin is not valid";
     public final static String ACCOUNT_UPDATED= "Account updated successfully";
+    public final static String INCORRECT_PIN= "Incorrect pin";
     public final static String ACCOUNT_DEPOSIT= "Deposit of  ₦";
     public final static String ACCOUNT_WITHDRAW= "Withdrawal of  ₦";
     public final static String DEPOSIT_SUCCESSFUL= "was make successfully";

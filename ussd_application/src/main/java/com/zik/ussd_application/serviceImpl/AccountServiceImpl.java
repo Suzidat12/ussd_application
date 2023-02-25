@@ -76,10 +76,10 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
-    private  Accounts validateWithdrawal(String phoneNumber,String pin) {
-        Optional<Accounts> accountsOptional = accountRepo.checkPhoneNumberAndPin(phoneNumber, pin);
+    private  Accounts validateWithdrawal(String pin) {
+        Optional<Accounts> accountsOptional = accountRepo.checkWithdrawal(pin);
         if (accountsOptional.isEmpty())
-            throw new RecordNotFoundException(PHONE_NUMBER_PIN_NOT_CORRECT);
+            throw new RecordNotFoundException(PIN_NOT_CORRECT);
         return accountsOptional.get();
 
     }
@@ -99,7 +99,7 @@ public class AccountServiceImpl implements AccountService {
             accounts.setAddress(load.getAddress());
             accounts.setAccountNumber(AppUtils.generateAccountNumber());
             accounts.setAccountType(load.getAccountType());
-            accounts.setPin(AppUtils.encryptPin(load.getPin()));
+            accounts.setPin(load.getPin());
             accounts.setBalance(0.00);
             accounts.setDatecreated(new Date());
             accounts.setAccountStatus(AccountStatus.COMPLETED.name());
@@ -122,7 +122,7 @@ public class AccountServiceImpl implements AccountService {
         accounts.setFirstName(load.getFirstName());
         accounts.setLastName(load.getLastName());
         accounts.setAddress(load.getAddress());
-        accounts.setPin(AppUtils.encryptPin(load.getPin()));
+        accounts.setPin(load.getPin());
         accounts.setAccountType(load.getAccountType());
         accounts.setPhoneNumber(load.getPhoneNumber());
         accounts.setDateOfBirth(LocalDate.parse(load.getDateOfBirth(),formatter));
@@ -150,10 +150,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ResponseEntity withdraw(Double amount, String phoneNumber,String pin) {
-        // check if the phone number and the pin is correct
-        Accounts accounts = validateWithdrawal(phoneNumber,pin);
-        if(amount > accounts.getBalance()){
+    public ResponseEntity withdraw(Double amount, String pin) {
+        // check if  the pin is correct
+        Accounts accounts = validateWithdrawal(pin);
+
+        if(amount > accounts.getBalance() ){
             throw  new InsufficientException(INSUFFICIENT_BALANCE);
         }
             accounts.setBalance(accounts.getBalance()-amount);

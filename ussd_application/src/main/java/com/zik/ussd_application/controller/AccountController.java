@@ -31,8 +31,8 @@ public class AccountController {
     }
 
     @PostMapping(WITHDRAW)
-    public ResponseEntity withdraw(@RequestParam("amount") Double amount,@RequestParam("phoneNumber") String phoneNumber, @RequestParam("pin") String pin){
-        return accountService.withdraw(amount,phoneNumber,pin);
+    public ResponseEntity withdraw(@RequestParam("amount") Double amount,@RequestParam("pin") String pin){
+        return accountService.withdraw(amount,pin);
     }
 
     @GetMapping(BALANCE_CHECK)
