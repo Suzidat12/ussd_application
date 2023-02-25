@@ -43,7 +43,7 @@ CREATE TABLE `accounts` (
   `pin` varchar(255) DEFAULT NULL,
   `state` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -52,7 +52,7 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
-INSERT INTO `accounts` VALUES (1,'1532547863','COMPLETED','Current','15, Adeolu Street Obantoko Abeokuta',10000,NULL,NULL,'1994-08-01','2023-02-23 20:31:35.002000',NULL,'Atobatele','Male','Oluwaseun','2023-02-23 20:45:41.906000',NULL,'07086542771','pT ���',NULL),(2,'1316275362','COMPLETED','Savings','20, Adeolu Street Obantoko Abeokuta',5000,NULL,NULL,'1994-08-02','2023-02-23 21:35:01.179000',NULL,'Atobatele','Male','Adio','2023-02-23 21:34:09.666000',NULL,'07033215343','{J.��',NULL),(3,'1647643522','COMPLETED','Savings','11,Jagunmolu Street, Obantoko Abeokuta',499799.5,NULL,NULL,'2000-08-11','2023-02-24 10:04:14.959000',NULL,'Oladipupo','Female','Faidat','2023-02-24 10:05:27.509000',NULL,'08142868888','pT ���',NULL),(4,'1472939269','COMPLETED','Fixed Deposit','5,Alogi Street Obantoko Abeokuta',249750,NULL,NULL,'2003-07-06','2023-02-24 10:29:06.306000',NULL,'Odofin','Male','Oyejide','2023-02-24 10:30:37.604000',NULL,'08033786421','`G �޼�sW<',NULL);
+INSERT INTO `accounts` VALUES (1,'1532547863','COMPLETED','Current','15, Adeolu Street Obantoko Abeokuta',9650,NULL,NULL,'1994-08-01','2023-02-23 20:31:35.002000',NULL,'Atobatele','Male','Oluwaseun','2023-02-25 09:39:10.416000',NULL,'07086542771','credo',NULL),(2,'1316275362','COMPLETED','Savings','20, Adeolu Street Obantoko Abeokuta',5000,NULL,NULL,'1994-08-02','2023-02-23 21:35:01.179000',NULL,'Atobatele','Male','Adio','2023-02-23 21:34:09.666000',NULL,'07033215343','solami12',NULL),(3,'1647643522','COMPLETED','Savings','11,Jagunmolu Street, Obantoko Abeokuta',499799.5,NULL,NULL,'2000-08-11','2023-02-24 10:04:14.959000',NULL,'Oladipupo','Female','Faidat','2023-02-24 10:05:27.509000',NULL,'08142868888','atobs',NULL),(4,'1472939269','COMPLETED','Fixed Deposit','5,Alogi Street Obantoko Abeokuta',249750,NULL,NULL,'2003-07-06','2023-02-24 10:29:06.306000',NULL,'Odofin','Male','Oyejide','2023-02-24 10:30:37.604000',NULL,'08033786421','1234ah',NULL),(5,'1118003208','COMPLETED','Savings','25, Adeolu Street Obantoko Abeokuta',6900,NULL,NULL,'2000-08-01','2023-02-25 09:11:36.582000',NULL,'Atobatele','Male','Afolabi','2023-02-25 09:35:54.329000',NULL,'08141219983','zikdat234',NULL);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -65,4 +65,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-02-24 11:48:04
+-- Dump completed on 2023-02-25  9:46:20

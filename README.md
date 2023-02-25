@@ -15,10 +15,10 @@ Steps:
 * Create a method to encrypt the pin of users
 * Write a query to check if the phone number already exist
 * Create account successfully.
-* Update account successfully.
-* Deposit of money into the account
-* Withdraw of money from the account
-* Check the balance of the account
+* Update account successfully by verifying with your registered account number.
+* Deposit of money into the account by verifying with your registered number
+* Withdraw of money from the account by verifying the pin
+* Check the balance of the account by verifying with your registered number
 * Integrate a third party api (Termii) for sms implementation for account holder to know every transactions that take place.
 * The SMS integration is working fine but the credentials will not be pushed along but during the review I can expose it.
 * Added third party payment api (paystack) integration using feign client.
