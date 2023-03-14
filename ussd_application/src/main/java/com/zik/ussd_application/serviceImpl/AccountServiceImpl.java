@@ -2,6 +2,7 @@ package com.zik.ussd_application.serviceImpl;
 
 import com.zik.ussd_application.accountRepo.AccountRepo;
 import com.zik.ussd_application.dto.AccountDto;
+import com.zik.ussd_application.dto.ApiResponse;
 import com.zik.ussd_application.dto.sms.Mrec;
 import com.zik.ussd_application.dto.sms.SmsRequest;
 import com.zik.ussd_application.enums.AccountStatus;
@@ -10,14 +11,23 @@ import com.zik.ussd_application.exception.InsufficientException;
 import com.zik.ussd_application.exception.RecordNotFoundException;
 import com.zik.ussd_application.feign.MessageFeign;
 import com.zik.ussd_application.model.Accounts;
+import com.zik.ussd_application.report.ReportExcelDownload;
 import com.zik.ussd_application.service.AccountService;
 
 import com.zik.ussd_application.utils.AppUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -104,13 +114,13 @@ public class AccountServiceImpl implements AccountService {
             accounts.setDatecreated(new Date());
             accounts.setAccountStatus(AccountStatus.COMPLETED.name());
             accountRepo.save(accounts);
-//            if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
-//                postToPhone(Mrec.builder()
-//                        .category("sms")
-//                        .sms("You have successfully created an account with phone number: " + accounts.getPhoneNumber()+ " with account number "+ accounts.getAccountNumber())
-//                        .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
-//                        .build());
-//            }
+            if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+                postToPhone(Mrec.builder()
+                        .category("sms")
+                        .sms("You have successfully created an account with phone number: " + accounts.getPhoneNumber()+ " with account number "+ accounts.getAccountNumber())
+                        .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+                        .build());
+            }
             return ResponseEntity.ok(ACCOUNT_CREATED);
 
         }
@@ -139,13 +149,13 @@ public class AccountServiceImpl implements AccountService {
         accounts.setLastTransactionDate(new Date());
         accounts.setBalance(accounts.getBalance()+amount);
         accountRepo.save(accounts);
-//        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
-//            postToPhone(Mrec.builder()
-//                    .category("sms")
-//                    .sms("You have successfully deposited ₦"+amount+ "into your account")
-//                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
-//                    .build());
-//        }
+        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+            postToPhone(Mrec.builder()
+                    .category("sms")
+                    .sms("You have successfully deposited ₦"+amount+ "into your account")
+                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+                    .build());
+        }
         return ResponseEntity.ok(ACCOUNT_DEPOSIT+ amount +DEPOSIT_SUCCESSFUL);
     }
 
@@ -160,13 +170,13 @@ public class AccountServiceImpl implements AccountService {
             accounts.setBalance(accounts.getBalance()-amount);
             accounts.setLastTransactionDate(new Date());
             accountRepo.save(accounts);
-//        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
-//            postToPhone(Mrec.builder()
-//                    .category("sms")
-//                    .sms("You have successfully withdraw ₦"+amount+ "from your account")
-//                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
-//                    .build());
-//        }
+        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+            postToPhone(Mrec.builder()
+                    .category("sms")
+                    .sms("You have successfully withdraw ₦"+amount+ "from your account")
+                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+                    .build());
+        }
             return ResponseEntity.ok(ACCOUNT_WITHDRAW+ amount +WITHDRAW_SUCCESSFUL);
 
     }
@@ -175,13 +185,61 @@ public class AccountServiceImpl implements AccountService {
     public ResponseEntity checkBalance(String phoneNumber) {
         Accounts accounts = validateAccount(phoneNumber);
         Double checkBalance = accounts.getBalance();
-//        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
-//            postToPhone(Mrec.builder()
-//                    .category("sms")
-//                    .sms("Your balance is ₦"+checkBalance)
-//                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
-//                    .build());
-//        }
+        if(accounts.getAccountStatus()!=null && accounts.getAccountStatus().equals("COMPLETED")){
+            postToPhone(Mrec.builder()
+                    .category("sms")
+                    .sms("Your balance is ₦"+checkBalance)
+                    .to(Arrays.asList(getPhone(accounts.getPhoneNumber())))
+                    .build());
+        }
         return ResponseEntity.ok(CHECK_BALANCE + checkBalance);
     }
+
+    @Override
+    public StreamingResponseBody downloadByPageable(HttpServletResponse response, int pageNumber, int pageSize) throws IOException, ParseException {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        List<Accounts> list = accountRepo.getByPage(pageable);
+        ByteArrayInputStream bis = ReportExcelDownload.generateTransactionExcel(list);
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=TransactionReportByPageable.xls");
+        response.setHeader("Cache-Control",
+                "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+        return outputStream -> {
+            int nRead;
+            byte[] data = new byte[1024];
+            while ((nRead = bis.read(data, 0, data.length)) != -1) {
+                outputStream.write(data, 0, nRead);
+            }
+            outputStream.flush();
+            outputStream.close();
+        };
+
+    }
+
+    @Override
+    public StreamingResponseBody downloadByYear(HttpServletResponse response, Integer year) throws IOException, ParseException {
+        List<Accounts> list = accountRepo.findByYear(year);
+        ByteArrayInputStream bis = ReportExcelDownload.generateTransactionExcel(list);
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("Content-Disposition",
+                "attachment; filename=AccountReportByYear.xls");
+        response.setHeader("Cache-Control",
+                "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+        return outputStream -> {
+            int nRead;
+            byte[] data = new byte[1024];
+            while ((nRead = bis.read(data, 0, data.length)) != -1) {
+                outputStream.write(data, 0, nRead);
+            }
+            outputStream.flush();
+            outputStream.close();
+        };
+    }
+
+
 }

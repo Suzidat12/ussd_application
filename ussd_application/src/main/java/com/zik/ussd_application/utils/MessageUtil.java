@@ -20,5 +20,7 @@ public class MessageUtil {
     public final static String DEPOSIT= "/deposit";
     public final static String WITHDRAW= "/withdraw";
     public final static String BALANCE_CHECK= "/checkBalance";
+    public final static String REPORT_DOWNLOAD_PAGE= "/downloadExcel-report-by-pagination";
+    public final static String REPORT_DOWNLOAD_YEAR= "/downloadExcel-report-by-year";
 
 }
