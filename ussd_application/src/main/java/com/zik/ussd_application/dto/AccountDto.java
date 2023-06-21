@@ -14,4 +14,5 @@ public class AccountDto {
     private String gender;
     private String accountType;
     private String pin;
+
 }

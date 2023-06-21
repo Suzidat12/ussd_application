@@ -1,0 +1,6 @@
+FROM openjdk:11
+MAINTAINER Atobatele Zik sunkanmi@credocentral.com
+WORKDIR /app
+COPY config/bootstrap.yml /app/config/bootstrap.yml
+COPY target/ussd-service*.jar /app/ussd-service.jar
+ENTRYPOINT ["java", "-jar", "ussd-service.jar"]
