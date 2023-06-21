@@ -4,10 +4,7 @@ import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -43,6 +40,43 @@ throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParamet
     return Base64.getEncoder().encodeToString(cipherText);
 
 }
+
+    public static String encryptPasswordBased(String plainText, SecretKey key,IvParameterSpec iv)
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+            InvalidKeyException, BadPaddingException,IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE,key,iv);
+        return Base64.getEncoder().encodeToString(cipher.doFinal(plainText.getBytes()));
+
+    }
+
+    public static String decryptPasswordBased(String cipherText, SecretKey key,IvParameterSpec iv)
+            throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+            InvalidKeyException, BadPaddingException,IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE,key,iv);
+        return new String(cipher.doFinal(Base64.getDecoder().decode(cipherText)));
+
+    }
+
+    public static SealedObject encryptObject(String algorithm, Serializable object, SecretKey key,
+                                             IvParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException, InvalidKeyException, IOException, IllegalBlockSizeException {
+        Cipher cipher = Cipher.getInstance(algorithm);
+        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+        SealedObject sealedObject = new SealedObject(object, cipher);
+        return sealedObject;
+    }
+
+    public static Serializable decryptObject(String algorithm, SealedObject sealedObject, SecretKey key,
+                                             IvParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
+            InvalidAlgorithmParameterException, InvalidKeyException, ClassNotFoundException,
+            BadPaddingException, IllegalBlockSizeException, IOException {
+        Cipher cipher = Cipher.getInstance(algorithm);
+        cipher.init(Cipher.DECRYPT_MODE, key, iv);
+        Serializable unsealObject = (Serializable) sealedObject.getObject(cipher);
+        return unsealObject;
+    }
 public static String decrypt(String algorithm,String cipherText,SecretKey key,IvParameterSpec iv)
             throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
     InvalidKeyException, BadPaddingException,IllegalBlockSizeException{
