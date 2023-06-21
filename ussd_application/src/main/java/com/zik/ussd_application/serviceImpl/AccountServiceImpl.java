@@ -51,8 +51,7 @@ public class AccountServiceImpl implements AccountService {
     private String API_TYPE;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-//The SMS implementation is working fine, but I decided to commented it because I will not be
-//    pushing the credentials along with it ,but during review I can share it.
+
     private String getPhone(String phone) {
         if(phone.startsWith("+234")){
             return phone.substring(1);
